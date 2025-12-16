@@ -46,14 +46,3 @@ npm run dev
 Visit [`http://localhost:3000`](http://localhost:3000) to view the site locally.
 
 ---
-
-## About the Creator
-
-Built with care by **Corey Farr**.
-
-If you are a client seeking unique, premium websites, or are recruiting web development roles, let’s connect!
-
-Email: [corey.p.farr@gmail.com](mailto:corey.p.farr@gmail.com)  
-Phone: [+1 (928) 965-8502](tel:+19289658502)
-
----
