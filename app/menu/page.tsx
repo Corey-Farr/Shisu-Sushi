@@ -1,5 +1,5 @@
 import { Section } from "@/components/Section";
-import { ImageCard } from "@/components/ImageCard";
+import { RotatingImageCard } from "@/components/RotatingImageCard";
 import { menuCategories } from "@/content/menu";
 
 export default function MenuPage() {
@@ -20,18 +20,24 @@ export default function MenuPage() {
             ))}
           </div>
           <div className="space-y-4">
-            {/* Food photography: add your sushi plates here */}
-            <ImageCard
-              src="/images/sushi-platter.jpg"
-              alt="A long wooden board lined with assorted nigiri and maki."
-              label="Service"
-              description="The board changes nightly, written around what the water brings in."
-            />
-            <ImageCard
-              src="/images/omakase-course.jpg"
-              alt="A composed omakase course with seasonal garnishes."
-              label="Courses"
-              description="Small, deliberate courses that move at the pace of conversation."
+            {/* Food photography: a single card that cycles through images */}
+            <RotatingImageCard
+              slides={[
+                {
+                  src: "/images/sushi-platter.jpg",
+                  alt: "A long wooden board lined with assorted nigiri and maki.",
+                  label: "Service",
+                  description:
+                    "Boards change nightly, written around what the water brings in."
+                },
+                {
+                  src: "/images/omakase-course.jpg",
+                  alt: "A composed omakase course with seasonal garnishes.",
+                  label: "Courses",
+                  description:
+                    "Small, deliberate courses that move at the pace of conversation."
+                }
+              ]}
             />
           </div>
         </div>
