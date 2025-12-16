@@ -37,8 +37,8 @@ export default function ReservationsPage() {
               {site.phone}
             </a>
             <p className="mt-2 text-xs text-white/60">
-              For large parties, buyouts, or special occasions, please call or
-              email{" "}
+            If you like this site and wish to inquire about my other work, <br />please call or email{" "}
+            <br />
               <a href={`mailto:${site.reservationsEmail}`}>
                 {site.reservationsEmail}
               </a>

@@ -18,12 +18,12 @@ export const site: SiteContent = {
       body: "Thirteen seats, soft light, and just enough music. A space built for slow dinners and long conversations."
     }
   ],
-  addressLines: ["123 Evening Lane"],
-  cityLine: "Orlando, FL 32801",
-  phone: "+1 (407) 555-0123",
-  email: "hello@shisusushi.com",
-  reservationsEmail: "reservations@shisusushi.com",
-  mapUrl: "https://maps.google.com?q=Shisu+Sushi",
+  addressLines: ["123 Main Street"],
+  cityLine: "New York, NY 10001",
+  phone: "+1 (928) 965-8502",
+  email: "corey.p.farr@gmail.com",
+  reservationsEmail: "corey.p.farr@gmail.com",
+  mapUrl: "https://maps.google.com?q=Times+Square",
   hoursSummary: "Wednesday – Sunday",
   seatingsSummary: "First seating 5:30pm · Second seating 8:15pm",
   social: [
