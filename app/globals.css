@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-shisu-black text-shisu-ivory antialiased;
+}
+
+a {
+  @apply text-shisu-gold hover:text-shisu-ivory transition-colors;
+}
+
+button {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-shisu-gold focus-visible:ring-offset-2 focus-visible:ring-offset-shisu-black;
+}
+
+
