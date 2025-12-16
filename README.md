@@ -51,9 +51,9 @@ Visit [`http://localhost:3000`](http://localhost:3000) to view the site locally.
 
 Built with care by **Corey Farr**.
 
-If you are a client seeking unique, premium websites, or a recruiter interested in web development roles, let’s connect!
+If you are a client seeking unique, premium websites, or are recruiting web development roles, let’s connect!
 
-Email: [corey.p.farr@gmail.com](mailto:corey.p.farr@gmail.com)
+Email: [corey.p.farr@gmail.com](mailto:corey.p.farr@gmail.com)  
 Phone: [+1 (928) 965-8502](tel:+19289658502)
 
 ---
