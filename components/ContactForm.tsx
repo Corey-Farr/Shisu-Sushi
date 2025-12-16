@@ -1,70 +1,57 @@
-/* Client component: handles form state and validation */
+/* Client component: handles form state and validation using React Hook Form + Zod */
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { site } from "@/content/site";
 
-type FormState = {
-  name: string;
-  email: string;
-  phone: string;
-  date: string;
-  time: string;
-  partySize: string;
-  message: string;
-  website: string; // honeypot
-};
+const contactFormSchema = z.object({
+  name: z.string().min(1, "Please enter your name."),
+  email: z.string().email("Please enter a valid email.").min(1, "Please enter your email."),
+  phone: z.string().optional(),
+  date: z.string().min(1, "Please select a preferred date."),
+  time: z.string().min(1, "Please add a preferred time."),
+  partySize: z.string().min(1, "Please add a party size."),
+  message: z.string().min(1, "Tell us a bit about your visit."),
+  website: z.string().optional() // honeypot
+});
 
-type Errors = Partial<Record<keyof FormState, string>>;
-
-const initialState: FormState = {
-  name: "",
-  email: "",
-  phone: "",
-  date: "",
-  time: "",
-  partySize: "",
-  message: "",
-  website: ""
-};
+type ContactFormData = z.infer<typeof contactFormSchema>;
 
 export function ContactForm() {
-  const [values, setValues] = useState<FormState>(initialState);
-  const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
-
-  function handleChange(
-    field: keyof FormState,
-    value: string
-  ) {
-    setValues((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: undefined }));
-  }
-
-  function validate(): boolean {
-    const nextErrors: Errors = {};
-    if (!values.name.trim()) nextErrors.name = "Please enter your name.";
-    if (!values.email.trim()) nextErrors.email = "Please enter your email.";
-    if (values.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(values.email)) {
-      nextErrors.email = "Please enter a valid email.";
+  
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    watch
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      date: "",
+      time: "",
+      partySize: "",
+      message: "",
+      website: ""
     }
-    if (!values.date.trim()) nextErrors.date = "Please select a preferred date.";
-    if (!values.time.trim()) nextErrors.time = "Please add a preferred time.";
-    if (!values.partySize.trim()) nextErrors.partySize = "Please add a party size.";
-    if (!values.message.trim()) nextErrors.message = "Tell us a bit about your visit.";
+  });
 
-    setErrors(nextErrors);
-    return Object.keys(nextErrors).length === 0;
-  }
+  const websiteValue = watch("website");
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!validate()) return;
-    if (values.website.trim()) {
-      // Honeypot filled – silently ignore
+  async function onSubmit(data: ContactFormData) {
+    // Honeypot check
+    if (data.website?.trim()) {
       setStatus("success");
       return;
     }
+
     setStatus("submitting");
     try {
       const endpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT;
@@ -72,15 +59,15 @@ export function ContactForm() {
         throw new Error("Missing form endpoint.");
       }
       const payload = {
-        name: values.name,
-        email: values.email,
-        phone: values.phone,
-        date: values.date,
-        time: values.time,
-        partySize: values.partySize,
-        message: values.message,
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        date: data.date,
+        time: data.time,
+        partySize: data.partySize,
+        message: data.message,
         _subject: "New Shisu Sushi contact request",
-        _replyto: values.email
+        _replyto: data.email
       };
       const res = await fetch(endpoint, {
         method: "POST",
@@ -89,7 +76,7 @@ export function ContactForm() {
       });
       if (!res.ok) throw new Error("Request failed");
       setStatus("success");
-      setValues(initialState);
+      reset();
     } catch {
       setStatus("error");
     }
@@ -97,7 +84,7 @@ export function ContactForm() {
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/80"
       aria-describedby="contact-form-description"
     >
@@ -110,16 +97,12 @@ export function ContactForm() {
 
       {/* Honeypot */}
       <div className="hidden">
-        <label htmlFor="website">
-          Website
-        </label>
+        <label htmlFor="website">Website</label>
         <input
           id="website"
-          name="website"
+          {...register("website")}
           type="text"
           autoComplete="off"
-          value={values.website}
-          onChange={(e) => handleChange("website", e.target.value)}
         />
       </div>
 
@@ -128,18 +111,16 @@ export function ContactForm() {
           label="Name"
           id="name"
           required
-          value={values.name}
-          error={errors.name}
-          onChange={(v) => handleChange("name", v)}
+          error={errors.name?.message}
+          {...register("name")}
         />
         <Field
           label="Email"
           id="email"
           type="email"
           required
-          value={values.email}
-          error={errors.email}
-          onChange={(v) => handleChange("email", v)}
+          error={errors.email?.message}
+          {...register("email")}
         />
       </div>
 
@@ -148,27 +129,24 @@ export function ContactForm() {
           label="Phone"
           id="phone"
           type="tel"
-          value={values.phone}
-          error={errors.phone}
-          onChange={(v) => handleChange("phone", v)}
+          error={errors.phone?.message}
+          {...register("phone")}
         />
         <Field
           label="Preferred date"
           id="date"
           type="date"
           required
-          value={values.date}
-          error={errors.date}
-          onChange={(v) => handleChange("date", v)}
+          error={errors.date?.message}
+          {...register("date")}
         />
         <Field
           label="Preferred time"
           id="time"
           type="time"
           required
-          value={values.time}
-          error={errors.time}
-          onChange={(v) => handleChange("time", v)}
+          error={errors.time?.message}
+          {...register("time")}
         />
       </div>
 
@@ -177,9 +155,8 @@ export function ContactForm() {
           label="Party size"
           id="partySize"
           required
-          value={values.partySize}
-          error={errors.partySize}
-          onChange={(v) => handleChange("partySize", v)}
+          error={errors.partySize?.message}
+          {...register("partySize")}
         />
       </div>
 
@@ -188,9 +165,8 @@ export function ContactForm() {
         id="message"
         as="textarea"
         required
-        value={values.message}
-        error={errors.message}
-        onChange={(v) => handleChange("message", v)}
+        error={errors.message?.message}
+        {...register("message")}
       />
 
       <button
@@ -218,34 +194,28 @@ export function ContactForm() {
 type FieldProps = {
   label: string;
   id: string;
-  value: string;
-  onChange: (value: string) => void;
   error?: string;
   required?: boolean;
   type?: string;
   as?: "input" | "textarea";
-};
+} & React.InputHTMLAttributes<HTMLInputElement> & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 function Field({
   label,
   id,
-  value,
-  onChange,
   error,
   required,
   type = "text",
-  as = "input"
+  as = "input",
+  ...props
 }: FieldProps) {
   const common = {
     id,
-    name: id,
-    value,
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-      onChange(e.target.value),
     className:
       "w-full rounded-xl border border-white/15 bg-black/20 px-3 py-2 text-sm text-shisu-ivory placeholder:text-white/40 focus-visible:border-shisu-gold focus-visible:outline-none",
     "aria-invalid": error ? "true" : "false",
-    "aria-describedby": error ? `${id}-error` : undefined
+    "aria-describedby": error ? `${id}-error` : undefined,
+    ...props
   };
 
   return (
@@ -270,5 +240,3 @@ function Field({
     </div>
   );
 }
-
-
