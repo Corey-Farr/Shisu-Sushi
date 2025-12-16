@@ -22,7 +22,7 @@ export function Navbar() {
           {navItems.map((item) => (
             <Link
               key={item.href}
-              href={item.href}
+              href={item.href as any}
               className="hover:text-white"
             >
               {item.label}
