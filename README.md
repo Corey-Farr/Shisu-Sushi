@@ -1,5 +1,5 @@
 # Shisu Sushi — Luxury Restaurant Website
-Link: [shisu-sushi.vercel.app](shisu-sushi.vercel.app)
+Link: [shisu-sushi.vercel.app](https://shisu-sushi.vercel.app)
 
 Welcome to **Shisu Sushi**, a visually striking, modern restaurant site crafted to showcase the finest digital experiences for fine dining. This project is a **portfolio mockup**, designed and developed to demonstrate design and frontend skills, presenting a tangible sample of what your web presence _could_ be.
 
